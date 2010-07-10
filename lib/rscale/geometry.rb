@@ -6,7 +6,7 @@ module RScale::Processor
     def square? ; width == height ; end
     def horizontal? ; width > height ; end
     def vertical? ; width < height ; end
-    def ratio ; width / height ; end
+    def ratio ; width.to_f / height.to_f ; end
     def to_s ; "#{width}x#{height}" ; end
     def to_crop_resize ; horizontal? ? "#{width}x" : "x#{height}" ; end
         

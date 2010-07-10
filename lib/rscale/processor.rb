@@ -32,11 +32,11 @@ module RScale
     def self.process(file_in, file_out, opts={})
       src = Geometry.from_file(file_in)      
       dst = Geometry.parse(opts[:size])
-      
+      sz = dst.ratio > src.ratio ? "#{dst.width}x" : "x#{dst.height}"
       opts[:crop] = true unless opts.key?(:crop)
       
       convert = Convert.new(file_in, file_out) do |c|
-        c.add(:resize, dst.horizontal? ? "#{dst.width}x" : "x#{dst.height}")
+        c.add(:resize, sz)
         c.add(:gravity, 'Center')
         c.add(:crop, "#{dst}+0+0") if opts[:crop]
         c.add(:sharpen, "#{@@sharp_level.first}{#{@@sharp_level.last}}'") if opts.key?(:sharp)
