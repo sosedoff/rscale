@@ -24,7 +24,6 @@ module RScale
         unless File.exists?(File.dirname(@file_to))
           File.makedirs(File.dirname(@file_to)) 
         end
-        
         `convert #{@file_from.shellescape} #{@options.join(' ')} #{@file_to.shellescape} 2>&1`
       end
     end
