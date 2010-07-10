@@ -13,7 +13,8 @@ Gem::Specification.new do |s|
     "lib/rscale/configuration.rb",
     "lib/rscale/format.rb",
     "lib/rscale/helpers.rb",
-    "lib/rscale/processor.rb"
+    "lib/rscale/processor.rb",
+    "lib/rscale/geometry.rb"
   ]
   s.homepage = %q{http://github/sosedoff/rscale}
   s.rdoc_options = ["--charset=UTF-8"]

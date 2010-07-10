@@ -24,15 +24,27 @@ module RScale
     if @@formats.key?(format.to_sym)
       fmt = @@formats[format.to_sym]
       file_info = File.get_info(file)
+      url = fmt.url
       image = {}
       
       options = file_info.merge(:format => fmt.name)
       
+      options[:time] = Time.now.to_i unless url[':time'].nil?
+      options[:md5] = Digest::MD5.filedigest(file) unless url[':md5'].nil?
+      unless url[':uuid'].nil?
+        options[:uuid] = `uuidgen`.strip.gsub(/-/,'')
+        options[:uuid_dir] = "#{options[:uuid][0,2]}/#{options[:uuid][2,2]}"
+      end
+      
       fmt.styles.each_pair do |k,v|
         url = fmt.url.placeholders(options.merge(v))
         file_out = @@config.public + "/#{url}"
-        image[k] = Processor.process(file, file_out, v)
+        if Processor.process(file, file_out, v)
+          image[k] = url
+        end
       end
+      
+      return image.size == fmt.styles.size ? image : nil
     else
       raise ArgumentError, "Format #{format.to_s} cannot be found!"
     end

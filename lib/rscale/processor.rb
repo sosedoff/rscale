@@ -1,5 +1,4 @@
 require 'ftools'
-require 'rscale/geometry'
 
 module RScale
   module Processor
@@ -25,6 +24,7 @@ module RScale
         unless File.exists?(File.dirname(@file_to))
           File.makedirs(File.dirname(@file_to)) 
         end
+        
         `convert #{@file_from.shellescape} #{@options.join(' ')} #{@file_to.shellescape} 2>&1`
       end
     end
@@ -37,7 +37,7 @@ module RScale
       
       convert = Convert.new(file_in, file_out) do |c|
         c.add(:resize, dst.horizontal? ? "#{dst.width}x" : "x#{dst.height}")
-        c.add(:gravity, 'North')
+        c.add(:gravity, 'Center')
         c.add(:crop, "#{dst}+0+0") if opts[:crop]
         c.add(:sharpen, "#{@@sharp_level.first}{#{@@sharp_level.last}}'") if opts.key?(:sharp)
         c.add(:quality, "#{opts[:q]}") if opts.key?(:q)
