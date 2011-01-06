@@ -1,12 +1,21 @@
 module RScale
+  extend RScale::UUID
+  
   @@config = nil
   @@formats = {}
   
+  # Configure RScale
   def self.configure
     @@config = Configuration.new if @@config.nil?
     yield @@config
   end
   
+  # Get current RScale configuration
+  def self.config
+    @@config
+  end
+  
+  # Add new format
   def self.format(name)
     unless @@formats.key?(name)
       @@formats[name] = Format.new(name)
@@ -16,10 +25,12 @@ module RScale
     end
   end
   
+  # Get list of formats
   def self.formats
     @@formats
   end
   
+  # Generate thumbnails for the image format
   def self.image_for(format, file)
     if @@formats.key?(format.to_sym)
       fmt = @@formats[format.to_sym]
@@ -32,7 +43,7 @@ module RScale
       options[:time] = Time.now.to_i unless url[':time'].nil?
       options[:md5] = Digest::MD5.filedigest(file) unless url[':md5'].nil?
       unless url[':uuid'].nil?
-        options[:uuid] = `uuidgen`.strip.gsub(/-/,'')
+        options[:uuid] = uuid
         options[:uuid_dir] = "#{options[:uuid][0,2]}/#{options[:uuid][2,2]}"
       end
       

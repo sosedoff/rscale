@@ -1,0 +1,80 @@
+= RScale -- ImageMagick-based image processing for Ruby
+
+This is a simple image processing library for ruby scripts based on ImageMagick terminal tool.
+Allows you to define a set of image formats and its dimensions and generate thumbnails just with one call.
+It does not have any other features than making thumbnails, neither it keeps the original source.
+Rails 2/3 compatible.
+
+* Main page: http://github.com/sosedoff/rscale
+* ImageMagick: http://www.imagemagick.org
+
+== Installation
+
+You have to install ImageMagick in order to use this library.
+To check installation run this command in terminal:
+  
+  identify --version
+  
+Install via gem:
+
+  gem install rscale
+
+== Configuration
+
+  require 'rscale'
+  
+  # Initial configuration
+  # This 'public' path has to be writable
+  RScale.configure do |c|
+    c.public = "PATH_TO_YOUR_OUTPUT_DIR"
+  end
+  
+  # Lets add avatar format with 3 different sizes
+  RScale.format :avatar do |f|
+    f.url = '/static/:format/:style/:uuid_dir/:uuid.jpg' # optional
+    f.style :small,   :size => '64x64'
+    f.style :medium,  :size => '128x128'
+    f.style :large,   :size => '256x256'
+  end
+  
+  # Another format, generates 100x100 PNG thumbnails
+  RScale.format :profile do |f|
+    f.url = '/:format/:style/:uuid_dir/:uuid.png' # optional
+    f.style :default, :size => '100x200'
+  end
+  
+URL parameter is just a path to store generated thumbnails, relative to public path defined in configuration block.
+Available URL parameters:
+
+* :uuid         32-byte UUID string 
+* :uuid_dir     /xx/xx directory structure generated from uuid string
+* :md5          32-byte source image MD5 checksum
+* :time         Unix timestamp
+* :extension    Original extension of source image
+* :filename     Original filename of source image
+* :format       Name of user-defined format
+* :style        Name of user-defined format style (ex. :small, :medium, :large)
+
+== Usage
+
+  path = '/tmp/.....' # path to the source image
+  result = RScale.image_for :avatar, path
+  
+  # If source file cannot be processed result will always be null
+  unless result.nil?
+    # result will contain processed thumbnails with path relative to public path
+    result[:small]    # 64x64
+    result[:medium]   # 128x128
+    result[:large]    # 256x256
+  end
+  
+== Limitation
+
+* No support for AmazonS3/CloudFiles
+* No support for keeping source images
+* Only specific image dimensions (no relative Ax? sizes)
+
+== Authors
+
+Dan Sosedoff, 2010
+

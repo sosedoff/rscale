@@ -6,9 +6,10 @@ module RScale
     def initialize(name)
       @name = name.to_s
       @styles = {}
-      @url = '/:format/:style/:filename.:extension'
+      @url = '/:format/:style/:uuid_dir/:uuid.:extension'
     end
     
+    # Add a new style
     def style(name, opts={})
       raise FormatError, 'Options required!' if opts.empty?
       raise FormatError, 'Options must be a Hash!' unless opts.kind_of?(Hash)
